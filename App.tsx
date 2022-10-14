@@ -1,14 +1,15 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
 import 'react-native-gesture-handler';
+import {Provider} from 'react-redux';
 
-import HomeScreen from './screens/HomeScreen';
+import store from './redux/store';
+import Start from './Start';
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <HomeScreen />
-    </NavigationContainer>
+    <Provider store={store}>
+      <Start />
+    </Provider>
   );
 };
 
