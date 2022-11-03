@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://en.wikipedia.org/w/api.php',
+  baseURL: 'https://dog.ceo/api',
   timeout: 8000,
   headers: {},
 });
