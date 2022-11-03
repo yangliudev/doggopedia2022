@@ -6,7 +6,7 @@ import {useDispatch} from 'react-redux';
 import {apiRequest} from '../redux/slices/apiRequest';
 const HomeScreen = () => {
   const dispatch = useDispatch()<any>;
-  dispatch(apiRequest());
+  dispatch(apiRequest('Craig%20Noone'));
   return (
     <Container>
       <Header>Doggopedia</Header>

@@ -1,15 +1,18 @@
 import instance from '../../utilities/axios';
 
-export const apiRequest = () => () => {
-  console.log('start of api call');
+export const apiRequest = searchTerm => () => {
+  // console.log('search term is: ', searchTerm);
   instance
-    .get('?action=parse&page=dog&prop=text&formatversion=2&format=json')
+    .get(
+      '?action=query&format=json&list=search&formatversion=2&srsearch=' +
+        searchTerm,
+    )
     .then(response => {
       let responseData = response.data;
-      console.log('response from redux is ', responseData);
+      // console.log('full response ', responseData);
+      console.log('query ', responseData.query);
     })
     .catch(error => {
       console.log('apiRequest.js error is ', error);
     });
-  console.log('end of api call');
 };
