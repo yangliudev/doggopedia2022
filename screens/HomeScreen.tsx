@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, Image, StyleSheet, Button} from 'react-native';
 import styled from 'styled-components/native';
 
 import {useDispatch} from 'react-redux';
@@ -41,14 +41,15 @@ const HomeScreen = () => {
           uri: dogImgUrlLink,
         }}
       />
+      <Button title="Shuffle doggo" onPress={() => getRandomDogImage()} />
     </Container>
   );
 };
 
 const Container = styled.View`
   flex: 1;
-  justify-content: center;
   align-items: center;
+  padding-top: 70;
 `;
 
 const Header = styled.Text`
@@ -59,8 +60,8 @@ const styles = StyleSheet.create({
   image: {
     width: '50%',
     height: '25%',
-    paddingTop: 100,
-    textAlign: 'center',
+    borderRadius: 10,
+    marginTop: 30,
   },
 });
 
