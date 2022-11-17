@@ -4,7 +4,8 @@ import styled from 'styled-components/native';
 
 import {useDispatch} from 'react-redux';
 import {apiRequest} from '../redux/slices/apiRequest';
-import instance from '../utilities/axios';
+// import instance from '../utilities/axios';
+import axios from 'axios';
 
 const HomeScreen = () => {
   //   const dispatch = useDispatch()<any>;
@@ -14,18 +15,33 @@ const HomeScreen = () => {
 
   useEffect(() => {
     getRandomDogImage();
+    testGET();
     return () => {
       console.log('getRandomDogImage() cleanup');
     };
   }, []);
 
   const getRandomDogImage = () => {
-    instance
-      .get('/breeds/image/random')
+    axios
+      .get('https://dog.ceo/api/breeds/image/random')
       .then(response => {
         let responseData = response.data;
         setDogImgUrlLink(responseData.message);
         console.log('responseData ', responseData);
+      })
+      .catch(error => {
+        console.log('apiRequest.js error is ', error);
+      });
+  };
+
+  const testGET = () => {
+    axios
+      .get(
+        'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=Stack%20Overflow',
+      )
+      .then(response => {
+        let responseData = response.data.query.pages;
+        console.log('999999999 ', responseData);
       })
       .catch(error => {
         console.log('apiRequest.js error is ', error);

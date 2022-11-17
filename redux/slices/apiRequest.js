@@ -1,4 +1,4 @@
-import instance from '../../utilities/axios';
+import instance from '../../api/axios';
 
 export const apiRequest = searchTerm => () => {
   // console.log('search term is: ', searchTerm);
