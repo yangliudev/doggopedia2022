@@ -9,7 +9,7 @@ const Drawer = createDrawerNavigator();
 const MyDrawer = () => {
   return (
     <Drawer.Navigator>
-      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="Doggopedia" component={HomeScreen} />
       <Drawer.Screen name="Quiz" component={QuizScreen} />
     </Drawer.Navigator>
   );
