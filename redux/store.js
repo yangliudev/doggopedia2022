@@ -1,8 +1,8 @@
 import {configureStore} from '@reduxjs/toolkit';
-import userInfoReducer from './slices/userInfoSlice';
+import dataInfoReducer from './slices/dataInfoSlice';
 
 const reducer = {
-  userInfo: userInfoReducer,
+  dataInfo: dataInfoReducer,
 };
 
 const store = configureStore({
