@@ -5,13 +5,23 @@ import QuizScreen from '../screens/QuizScreen';
 import DogInfoScreen from '../screens/DogInfoScreen';
 
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Tab = createMaterialBottomTabNavigator();
 
 function MyTabs() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({color}) => (
+            <MaterialCommunityIcons name="home" color={color} size={26} />
+          ),
+        }}
+      />
       <Tab.Screen name="Quiz" component={QuizScreen} />
       <Tab.Screen name="DogInfo" component={DogInfoScreen} />
     </Tab.Navigator>
