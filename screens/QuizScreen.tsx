@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {Text, StyleSheet, Image, Button, TextInput} from 'react-native';
+import Layout from '../components/Layout';
 
 import axios from 'axios';
 
@@ -64,7 +65,7 @@ const QuizScreen = () => {
   };
 
   return (
-    <Container>
+    <Layout>
       <Header>Who's that doggo?</Header>
       <Image
         style={styles.image}
@@ -77,15 +78,9 @@ const QuizScreen = () => {
       <TextInputStyled onChangeText={text => handleUserInput(text)} />
 
       <Button title="Check" onPress={() => checkInputGuess()} />
-    </Container>
+    </Layout>
   );
 };
-
-const Container = styled.View`
-  flex: 1;
-  align-items: center;
-  padding-top: 70;
-`;
 
 const Header = styled.Text`
   font-size: 30px;

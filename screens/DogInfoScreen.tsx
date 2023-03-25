@@ -1,11 +1,12 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {Text} from 'react-native';
+import Layout from '../components/Layout';
 
 const DogInfoScreen = () => {
   return (
-    <View>
+    <Layout>
       <Text>hello</Text>
-    </View>
+    </Layout>
   );
 };
 

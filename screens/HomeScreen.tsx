@@ -3,6 +3,7 @@ import {ScrollView, View, Text, Image, StyleSheet, Button} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 
 import {useDispatch, useSelector} from 'react-redux';
+import Layout from '../components/Layout';
 import {apiRequest} from '../redux/slices/apiRequest';
 // import instance from '../utilities/axios';
 import axios from 'axios';
@@ -73,31 +74,19 @@ const HomeScreen = ({navigation}) => {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Text>Select a dog breed to learn more!</Text>
-        {/* <Text>{wikiJsonString}</Text> */}
-        <SelectList
-          setSelected={val => setSelected(val)}
-          data={dropdownList}
-          save="value"
-          onSelect={() => evalSelectedText(selected)}
-        />
-      </View>
-    </ScrollView>
+    <Layout>
+      <Text>Select a dog breed to learn more!</Text>
+      {/* <Text>{wikiJsonString}</Text> */}
+      <SelectList
+        setSelected={val => setSelected(val)}
+        data={dropdownList}
+        save="value"
+        onSelect={() => evalSelectedText(selected)}
+      />
+    </Layout>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-});
-
-// const Container = styled(View)`
-//   flex: 1,
-//   padding: 20,
-// `;
+const styles = StyleSheet.create({});
 
 export default HomeScreen;

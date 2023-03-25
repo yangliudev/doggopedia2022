@@ -11,7 +11,7 @@ const Tab = createMaterialBottomTabNavigator();
 function MyTabs() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Doggopedia" component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Quiz" component={QuizScreen} />
       <Tab.Screen name="DogInfo" component={DogInfoScreen} />
     </Tab.Navigator>
