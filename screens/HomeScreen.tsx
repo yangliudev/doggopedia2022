@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, View, Text, Image, StyleSheet, Button} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
+import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 
 import {useDispatch, useSelector} from 'react-redux';
 import Layout from '../components/Layout';
@@ -75,6 +76,7 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <Layout>
+      <Text style={styles.header}>Welcome to Doggopedia!</Text>
       <Text>Select a dog breed to learn more!</Text>
       {/* <Text>{wikiJsonString}</Text> */}
       <SelectList
@@ -87,6 +89,12 @@ const HomeScreen = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  header: {
+    fontSize: moderateScale(25),
+    marginBottom: moderateVerticalScale(200),
+    fontWeight: 'bold',
+  },
+});
 
 export default HomeScreen;
