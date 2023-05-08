@@ -57,7 +57,7 @@ const HomeScreen = ({navigation}) => {
 
   const evalSelectedText = dogName => {
     console.log('SELECTED IS ', dogName);
-    navigation.navigate('DogInfo');
+    navigation.navigate('DogInfoScreen', {dogName: dogName});
   };
 
   const testGET = () => {

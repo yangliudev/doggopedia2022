@@ -1,8 +1,8 @@
 import React from 'react';
 
-import HomeScreen from '../screens/HomeScreen';
+import HomeScreenStack from './HomeScreenStack';
 import QuizScreen from '../screens/QuizScreen';
-import DogInfoScreen from '../screens/DogInfoScreen';
+// import DogInfoScreen from '../screens/DogInfoScreen';
 
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,8 +13,8 @@ function MyTabs() {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="HomeScreenStack"
+        component={HomeScreenStack}
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({color}) => (
@@ -22,8 +22,8 @@ function MyTabs() {
           ),
         }}
       />
-      <Tab.Screen name="Quiz" component={QuizScreen} />
-      <Tab.Screen name="DogInfo" component={DogInfoScreen} />
+      <Tab.Screen name="QuizScreen" component={QuizScreen} />
+      {/* <Tab.Screen name="DogInfo" component={DogInfoScreen} /> */}
     </Tab.Navigator>
   );
 }

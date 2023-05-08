@@ -2,10 +2,11 @@ import React from 'react';
 import {Text} from 'react-native';
 import Layout from '../components/Layout';
 
-const DogInfoScreen = () => {
+const DogInfoScreen = ({route}) => {
+  const {dogName} = route.params;
   return (
     <Layout>
-      <Text>hello</Text>
+      <Text>{dogName}</Text>
     </Layout>
   );
 };
