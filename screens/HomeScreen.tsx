@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, View, Text, Image, StyleSheet, Button} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
+
 import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 
 import {useDispatch, useSelector} from 'react-redux';
@@ -8,7 +9,8 @@ import Layout from '../components/Layout';
 import {apiRequest} from '../redux/slices/apiRequest';
 // import instance from '../utilities/axios';
 import axios from 'axios';
-import styled from 'styled-components';
+
+import DropdownComponent from '../components/DropdownComponent';
 
 const HomeScreen = ({navigation}) => {
   const dispatch = useDispatch()<any>;
@@ -76,15 +78,17 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <Layout>
-      <Text style={styles.header}>Welcome to Doggopedia!</Text>
-      <Text>Select a dog breed to learn more!</Text>
+      <Text style={styles.header}>Doggopedia</Text>
+      <Image source={require('../assets/doggoMain.png')} style={styles.image} />
+      <Text style={styles.subtext}>Choose a dog breed to learn about:</Text>
       {/* <Text>{wikiJsonString}</Text> */}
-      <SelectList
+      {/* <SelectList
         setSelected={val => setSelected(val)}
         data={dropdownList}
         save="value"
         onSelect={() => evalSelectedText(selected)}
-      />
+      /> */}
+      <DropdownComponent navigation={navigation} />
     </Layout>
   );
 };
@@ -92,8 +96,16 @@ const HomeScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   header: {
     fontSize: moderateScale(25),
-    marginBottom: moderateVerticalScale(200),
+    marginBottom: moderateVerticalScale(20),
     fontWeight: 'bold',
+  },
+  image: {
+    width: moderateScale(150),
+    height: moderateScale(150),
+    marginBottom: moderateVerticalScale(20),
+  },
+  subtext: {
+    // marginBottom: moderateVerticalScale(20),
   },
 });
 
