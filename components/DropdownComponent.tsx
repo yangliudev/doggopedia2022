@@ -74,7 +74,7 @@ const DropdownComponent = ({navigation}) => {
         maxHeight={300}
         labelField="label"
         valueField="value"
-        placeholder={!isFocus ? 'woof woof' : '...'}
+        placeholder={!isFocus ? 'choose doggo' : '...'}
         searchPlaceholder="Search..."
         value={value}
         onFocus={() => setIsFocus(true)}
@@ -82,7 +82,7 @@ const DropdownComponent = ({navigation}) => {
         onChange={item => {
           setValue(item.value);
           setIsFocus(false);
-          evalSelectedText(item.value);
+          evalSelectedText(item.label);
         }}
         renderLeftIcon={() => (
           <MaterialCommunityIcons
