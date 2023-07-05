@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, StyleSheet} from 'react-native';
+import {Text, StyleSheet, ScrollView} from 'react-native';
 import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 import axios from 'axios';
 
@@ -40,15 +40,22 @@ const DogInfoScreen = ({route}) => {
 
   return (
     <Layout>
-      <Text style={styles.header}>{dogName}</Text>
-      <Text style={styles.text}>{dogInfo}</Text>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.header}>{dogName}</Text>
+        <Text style={styles.text}>{dogInfo}</Text>
+      </ScrollView>
     </Layout>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    padding: 20,
+  },
   header: {
     fontSize: moderateScale(25),
+    marginTop: moderateVerticalScale(50),
     marginBottom: moderateVerticalScale(20),
     fontWeight: 'bold',
   },
