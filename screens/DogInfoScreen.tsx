@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, StyleSheet, ScrollView} from 'react-native';
+import {Text, StyleSheet, ScrollView, Image} from 'react-native';
 import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 import axios from 'axios';
 
@@ -9,9 +9,11 @@ const DogInfoScreen = ({route}) => {
   const {dogName} = route.params;
 
   const [dogInfo, setDogInfo] = useState('');
+  const [dogImgUrl, setDogImgUrl] = useState('');
 
   useEffect(() => {
     getDogInfoFromApi();
+    getDogImageFromApi();
     return () => {
       console.log('DogInfoScreen.tsx cleanup');
     };
@@ -38,9 +40,31 @@ const DogInfoScreen = ({route}) => {
       });
   };
 
+  const getDogImageFromApi = () => {
+    axios
+      .get(
+        'http://en.wikipedia.org/w/api.php?action=query&titles=' +
+          dogName +
+          '&prop=pageimages&format=json&pithumbsize=300',
+      )
+      .then(response => {
+        // let responseData = response.data.query.pages;
+        // console.log('test get lmao ', responseData);
+
+        var data = response.data.query.pages;
+        var firstKey = Object.keys(data)[0];
+        var imgUrl = data[firstKey]['thumbnail']['source'];
+        setDogImgUrl(imgUrl);
+      })
+      .catch(error => {
+        console.log('error is ', error);
+      });
+  };
+
   return (
     <Layout>
       <ScrollView contentContainerStyle={styles.container}>
+        <Image source={{uri: dogImgUrl}} style={{width: 200, height: 200}} />
         <Text style={styles.header}>{dogName}</Text>
         <Text style={styles.text}>{dogInfo}</Text>
       </ScrollView>
