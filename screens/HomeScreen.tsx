@@ -8,6 +8,7 @@ import Layout from '../components/Layout';
 // import {apiRequest} from '../redux/slices/apiRequest';
 // import instance from '../utilities/axios';
 // import axios from 'axios';
+import MyAppText from '../components/MyAppText';
 
 import DropdownComponent from '../components/DropdownComponent';
 
@@ -42,9 +43,11 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <Layout>
-      <Text style={styles.header}>Doggopedia</Text>
+      <MyAppText style={{fontSize: 36}}>Doggopedia</MyAppText>
       <Image source={require('../assets/doggoMain.png')} style={styles.image} />
-      <Text style={styles.subtext}>Choose a dog breed to learn about:</Text>
+      <MyAppText style={{fontSize: 16}}>
+        Choose a dog breed to learn about:
+      </MyAppText>
       <DropdownComponent navigation={navigation} />
     </Layout>
   );
