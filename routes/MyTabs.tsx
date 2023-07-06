@@ -22,8 +22,16 @@ function MyTabs() {
           ),
         }}
       />
-      <Tab.Screen name="QuizScreen" component={QuizScreen} />
-      {/* <Tab.Screen name="DogInfo" component={DogInfoScreen} /> */}
+      <Tab.Screen
+        name="QuizScreen"
+        component={QuizScreen}
+        options={{
+          tabBarLabel: 'Quiz',
+          tabBarIcon: ({color}) => (
+            <MaterialCommunityIcons name="paw" color={color} size={26} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }

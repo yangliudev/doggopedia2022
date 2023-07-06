@@ -64,7 +64,7 @@ const DogInfoScreen = ({route}) => {
   return (
     <Layout>
       <ScrollView contentContainerStyle={styles.container}>
-        <Image source={{uri: dogImgUrl}} style={{width: 200, height: 200}} />
+        <Image source={{uri: dogImgUrl}} style={styles.imgStyle} />
         <Text style={styles.header}>{dogName}</Text>
         <Text style={styles.text}>{dogInfo}</Text>
       </ScrollView>
@@ -79,13 +79,18 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: moderateScale(25),
-    marginTop: moderateVerticalScale(50),
+    marginTop: moderateVerticalScale(20),
     marginBottom: moderateVerticalScale(20),
     fontWeight: 'bold',
   },
   text: {
     fontSize: moderateScale(20),
     marginBottom: moderateVerticalScale(20),
+  },
+  imgStyle: {
+    width: 300,
+    height: 300,
+    marginTop: moderateVerticalScale(40),
   },
 });
 
