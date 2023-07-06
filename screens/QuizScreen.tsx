@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
-import {StyleSheet, Image, Button, Alert} from 'react-native';
-import Layout from '../components/Layout';
-
+import {StyleSheet, Image, Button, Alert, View} from 'react-native';
+import {moderateVerticalScale} from 'react-native-size-matters';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
+
+import Layout from '../components/Layout';
+import MyAppText from '../components/MyAppText';
 
 const QuizScreen = () => {
   const [dogImgUrlLink, setDogImgUrlLink] = useState('');
@@ -90,30 +93,37 @@ const QuizScreen = () => {
     }
   }
 
+  const Separator = () => <View style={styles.separator} />;
+
   return (
     <Layout>
-      <Header>Who's that doggo?</Header>
+      <MyAppText style={{fontSize: 26}}>Who's that doggo?</MyAppText>
       <Image
         style={styles.image}
         source={{
           uri: dogImgUrlLink,
         }}
       />
-      <Button title="Shuffle doggo" onPress={() => getRandomDogImage()} />
+      {/* <Button title="Shuffle doggo" onPress={() => getRandomDogImage()} /> */}
+      <Ionicons
+        name="ios-shuffle"
+        style={{fontSize: 36}}
+        onPress={() => getRandomDogImage()}
+      />
+
+      <Separator />
 
       <TextInputStyled
         onChangeText={text => handleUserInput(text)}
         value={userInput}
       />
 
+      <Separator />
+
       <Button title="Check" onPress={() => checkInputGuess()} />
     </Layout>
   );
 };
-
-const Header = styled.Text`
-  font-size: 30px;
-`;
 
 const TextInputStyled = styled.TextInput`
   width: 150px;
@@ -127,7 +137,11 @@ const styles = StyleSheet.create({
     width: '50%',
     height: '25%',
     borderRadius: 10,
-    marginTop: 30,
+    marginTop: moderateVerticalScale(20),
+    marginBottom: moderateVerticalScale(20),
+  },
+  separator: {
+    marginVertical: moderateVerticalScale(5),
   },
 });
 

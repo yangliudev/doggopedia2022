@@ -54,18 +54,10 @@ const HomeScreen = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    fontSize: moderateScale(25),
-    marginBottom: moderateVerticalScale(20),
-    fontFamily: 'InterTight-Thin',
-  },
   image: {
     width: moderateScale(150),
     height: moderateScale(150),
     marginBottom: moderateVerticalScale(20),
-  },
-  subtext: {
-    // marginBottom: moderateVerticalScale(20),
   },
 });
 
