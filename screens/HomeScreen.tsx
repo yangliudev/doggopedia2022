@@ -1,28 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, View, Text, Image, StyleSheet, Button} from 'react-native';
-import {SelectList} from 'react-native-dropdown-select-list';
+import {Text, Image, StyleSheet} from 'react-native';
 
 import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 
-import {useDispatch, useSelector} from 'react-redux';
+// import {useDispatch, useSelector} from 'react-redux';
 import Layout from '../components/Layout';
-import {apiRequest} from '../redux/slices/apiRequest';
+// import {apiRequest} from '../redux/slices/apiRequest';
 // import instance from '../utilities/axios';
-import axios from 'axios';
+// import axios from 'axios';
 
 import DropdownComponent from '../components/DropdownComponent';
 
 const HomeScreen = ({navigation}) => {
-  const dispatch = useDispatch()<any>;
-  dispatch(apiRequest('Craig%20Noone'));
-
-  const {dataInfo} = useSelector(state => state);
-
-  const [selected, setSelected] = useState('');
+  // const dispatch = useDispatch()<any>;
+  // dispatch(apiRequest('Craig%20Noone'));
+  // const {dataInfo} = useSelector(state => state);
 
   const [dropdownList, setdropdownList] = useState([]);
-
-  console.log('adsfasdfadf', dataInfo);
 
   // JSON data scraped off of Wikipedia's Dog Breeds List
   let wikiJsonObj = require('../api/cleanedData.json');
@@ -30,22 +24,11 @@ const HomeScreen = ({navigation}) => {
   let jsonDataArray = wikiJsonString.split(',');
 
   useEffect(() => {
-    testGET();
     if (dropdownList.length === 0) populateDropdownList();
     return () => {
       console.log('clean up');
     };
   }, []);
-
-  // const data = [
-  //   {key: '1', value: 'Mobiles'},
-  //   {key: '2', value: 'Appliances'},
-  //   {key: '3', value: 'Cameras'},
-  //   {key: '4', value: 'Computers'},
-  //   {key: '5', value: 'Vegetables'},
-  //   {key: '6', value: 'Diary Products'},
-  //   {key: '7', value: 'Drinks'},
-  // ];
 
   const populateDropdownList = () => {
     let data = [];
@@ -57,37 +40,11 @@ const HomeScreen = ({navigation}) => {
     setdropdownList(data);
   };
 
-  const evalSelectedText = dogName => {
-    console.log('SELECTED IS ', dogName);
-    navigation.navigate('DogInfoScreen', {dogName: dogName});
-  };
-
-  const testGET = () => {
-    axios
-      .get(
-        'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=American Bully',
-      )
-      .then(response => {
-        let responseData = response.data.query.pages;
-        console.log('test get ', responseData);
-      })
-      .catch(error => {
-        console.log('apiRequest.js error is ', error);
-      });
-  };
-
   return (
     <Layout>
       <Text style={styles.header}>Doggopedia</Text>
       <Image source={require('../assets/doggoMain.png')} style={styles.image} />
       <Text style={styles.subtext}>Choose a dog breed to learn about:</Text>
-      {/* <Text>{wikiJsonString}</Text> */}
-      {/* <SelectList
-        setSelected={val => setSelected(val)}
-        data={dropdownList}
-        save="value"
-        onSelect={() => evalSelectedText(selected)}
-      /> */}
       <DropdownComponent navigation={navigation} />
     </Layout>
   );
