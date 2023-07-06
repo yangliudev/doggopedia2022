@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: moderateScale(25),
     marginBottom: moderateVerticalScale(20),
-    fontWeight: 'bold',
+    fontFamily: 'InterTight-Thin',
   },
   image: {
     width: moderateScale(150),
