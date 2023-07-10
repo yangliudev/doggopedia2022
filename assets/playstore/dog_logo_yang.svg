@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="dog_logo_yang.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   id="svg1071"
+   version="1.1"
+   viewBox="0 0 210 297"
+   height="297mm"
+   width="210mm">
+  <defs
+     id="defs1065" />
+  <sodipodi:namedview
+     inkscape:window-maximized="0"
+     inkscape:window-y="0"
+     inkscape:window-x="953"
+     inkscape:window-height="1048"
+     inkscape:window-width="958"
+     showgrid="false"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="mm"
+     inkscape:cy="467.32806"
+     inkscape:cx="447.13056"
+     inkscape:zoom="0.81468453"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata1068">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <rect
+       transform="rotate(-30.970281)"
+       ry="4.0758219"
+       y="110.24083"
+       x="-15.557823"
+       height="8.1516438"
+       width="74.315323"
+       id="rect1668"
+       style="fill:#000000;stroke-width:3.4414;stroke-linecap:square" />
+    <rect
+       style="fill:#000000;stroke-width:3.49726;stroke-linecap:square"
+       id="rect1668-9"
+       width="75.188026"
+       height="8.320653"
+       x="-27.627892"
+       y="156.92847"
+       ry="4.1603265"
+       transform="matrix(0.85311539,-0.52172228,0.50749202,0.86165646,0,0)" />
+  </g>
+</svg>
