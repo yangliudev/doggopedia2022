@@ -114,7 +114,7 @@ const QuizScreen = () => {
       {/* <Button title="Shuffle doggo" onPress={() => getRandomDogImage()} /> */}
       <Ionicons
         name="ios-shuffle"
-        style={{fontSize: 36}}
+        style={{fontSize: 36, color: '#000'}}
         onPress={() => getRandomDogImage()}
       />
 
@@ -140,6 +140,7 @@ const TextInputStyled = styled.TextInput`
   height: 40px;
   border-radius: 5px;
   background-color: #c5ddfa;
+  color: #000;
 `;
 
 const styles = StyleSheet.create({

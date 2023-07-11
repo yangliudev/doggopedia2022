@@ -58,6 +58,7 @@ const DropdownComponent = ({navigation}) => {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
+        itemTextStyle={styles.itemTextStyle}
         data={dropdownList}
         search
         maxHeight={300}
@@ -115,9 +116,11 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 16,
+    color: '#000',
   },
   selectedTextStyle: {
     fontSize: 16,
+    color: '#000',
   },
   iconStyle: {
     width: 20,
@@ -126,5 +129,9 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+    color: '#000',
+  },
+  itemTextStyle: {
+    color: '#000',
   },
 });

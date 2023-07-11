@@ -13,6 +13,7 @@ const MyAppText: React.FC<MyAppTextProps> = ({children, style}) => {
 const styles = StyleSheet.create({
   text: {
     fontFamily: 'InterTight-Light',
+    color: '#000',
   },
 });
 
