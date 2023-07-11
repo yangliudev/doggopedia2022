@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {Text, StyleSheet, ScrollView, Image} from 'react-native';
+import {StyleSheet, ScrollView, Image} from 'react-native';
 import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 import axios from 'axios';
 
 import Layout from '../components/Layout';
+import MyAppText from '../components/MyAppText';
 
 const DogInfoScreen = ({route}) => {
   const {dogName} = route.params;
@@ -65,8 +66,8 @@ const DogInfoScreen = ({route}) => {
     <Layout>
       <ScrollView contentContainerStyle={styles.container}>
         <Image source={{uri: dogImgUrl}} style={styles.imgStyle} />
-        <Text style={styles.header}>{dogName}</Text>
-        <Text style={styles.text}>{dogInfo}</Text>
+        <MyAppText style={styles.header}>{dogName}</MyAppText>
+        <MyAppText style={styles.text}>{dogInfo}</MyAppText>
       </ScrollView>
     </Layout>
   );

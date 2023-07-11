@@ -1,6 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
-import {StyleSheet, Image, Button, Alert, View} from 'react-native';
+import {
+  StyleSheet,
+  Image,
+  Alert,
+  View,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
 import {moderateVerticalScale} from 'react-native-size-matters';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
@@ -119,8 +126,11 @@ const QuizScreen = () => {
       />
 
       <Separator />
+      <Separator />
 
-      <Button title="Check" onPress={() => checkInputGuess()} />
+      <TouchableOpacity style={styles.button} onPress={() => checkInputGuess()}>
+        <Text style={styles.buttonText}>Check</Text>
+      </TouchableOpacity>
     </Layout>
   );
 };
@@ -142,6 +152,18 @@ const styles = StyleSheet.create({
   },
   separator: {
     marginVertical: moderateVerticalScale(5),
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
