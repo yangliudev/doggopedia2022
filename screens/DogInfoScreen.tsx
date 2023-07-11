@@ -18,7 +18,7 @@ const DogInfoScreen = ({route}) => {
     return () => {
       console.log('DogInfoScreen.tsx cleanup');
     };
-  });
+  }, []);
 
   const getDogInfoFromApi = () => {
     axios
@@ -28,11 +28,9 @@ const DogInfoScreen = ({route}) => {
       )
       .then(response => {
         let responseData = response.data.query.pages;
-        console.log('test get ***** ', responseData);
 
         var values = Object.values(responseData);
         var extractValue = values[0].extract;
-        console.log('test get !!!! ', extractValue);
 
         setDogInfo(extractValue);
       })
@@ -42,20 +40,23 @@ const DogInfoScreen = ({route}) => {
   };
 
   const getDogImageFromApi = () => {
+    // Easter Egg for Eddie
+    if (dogName === ' Rat Terrier') {
+      setDogImgUrl(require('../assets/rat_terrier_eddie.jpg'));
+      return;
+    }
+
     axios
       .get(
-        'http://en.wikipedia.org/w/api.php?action=query&titles=' +
+        'https://en.wikipedia.org/w/api.php?action=query&titles=' +
           dogName +
           '&prop=pageimages&format=json&pithumbsize=300',
       )
       .then(response => {
-        // let responseData = response.data.query.pages;
-        // console.log('test get lmao ', responseData);
-
         var data = response.data.query.pages;
         var firstKey = Object.keys(data)[0];
         var imgUrl = data[firstKey]['thumbnail']['source'];
-        setDogImgUrl(imgUrl);
+        setDogImgUrl({uri: imgUrl});
       })
       .catch(error => {
         console.log('error is ', error);
@@ -69,7 +70,7 @@ const DogInfoScreen = ({route}) => {
           <MyAppText>Sorry! No image url found from API :C</MyAppText>
         ) : (
           <Image
-            source={{uri: dogImgUrl}}
+            source={dogImgUrl}
             style={styles.imgStyle}
             resizeMode="contain"
           />
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     marginBottom: moderateVerticalScale(20),
   },
   imgStyle: {
-    height: 200,
+    height: 300,
     width: 'auto',
     marginTop: moderateVerticalScale(40),
     color: '#000',
