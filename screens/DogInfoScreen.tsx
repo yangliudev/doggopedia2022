@@ -87,22 +87,24 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-  },
-  header: {
-    fontSize: moderateScale(25),
-    marginTop: moderateVerticalScale(20),
-    marginBottom: moderateVerticalScale(20),
-    fontWeight: 'bold',
-  },
-  text: {
-    fontSize: moderateScale(20),
-    marginBottom: moderateVerticalScale(20),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   imgStyle: {
-    height: 300,
-    width: 'auto',
-    marginTop: moderateVerticalScale(40),
-    color: '#000',
+    width: '100%',
+    height: 200,
+    marginBottom: 20,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  text: {
+    fontSize: 20,
+    textAlign: 'left',
+    marginBottom: 20,
   },
 });
 
