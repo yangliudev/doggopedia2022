@@ -31,9 +31,9 @@ Doggopedia is a fun and educational mobile app that allows users to explore dog 
 ## 🖼️ Screenshots
 
 <p align="center">
-  <img src="https://github.com/yangliudev/AI-Sight/blob/master/PlayStore/main_screen.png?raw=true" alt="Home Page" width="45%" />
-  <img src="https://github.com/yangliudev/AI-Sight/blob/master/PlayStore/dog_info_screen.png?raw=true" alt="Information Page" width="45%" />
-  <img src="https://github.com/yangliudev/AI-Sight/blob/master/PlayStore/quiz_screen.png?raw=true" alt="Quiz Page" width="45%" />
+  <img src="https://github.com/yangliudev/doggopedia2022/blob/master/PlayStore/main_screen.png?raw=true" alt="Home Page" width="45%" />
+  <img src="https://github.com/yangliudev/doggopedia2022/blob/master/PlayStore/dog_info_screen.png?raw=true" alt="Information Page" width="45%" />
+  <img src="https://github.com/yangliudev/doggopedia2022/blob/master/PlayStore/quiz_screen.png?raw=true" alt="Quiz Page" width="45%" />
 </p>
 
 ---
