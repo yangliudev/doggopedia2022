@@ -1,25 +1,43 @@
 import React from 'react';
-import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 
 import Layout from '../components/Layout';
 import MyAppText from '../components/MyAppText';
 
-// Define type for dog favorite (adjust as needed)
-type Dog = {
-  name: string;
+import {useSelector} from 'react-redux';
+import type {RootState} from '../redux/store'; // adjust path to your store
+
+type DogState = {
+  info: string;
+  imgUrl?: any; // ImageSourcePropType might work here
+  isFavorite: boolean;
 };
 
 const FavoriteScreen: React.FC = () => {
-  const favorites: Dog[] = []; // Replace with actual data or props/state
+  // Select favorites from Redux store
+  const favorites = useSelector((state: RootState) => state.favorites) as {
+    [dogName: string]: DogState;
+  };
+
+  // Convert to array of entries to map over
+  const favoriteDogs = Object.entries(favorites).filter(
+    ([, dogData]) => dogData.isFavorite,
+  );
 
   return (
-    <Layout>
+    <View>
       <ScrollView contentContainerStyle={styles.container}>
         <MyAppText style={styles.title}>My Favorite Dogs</MyAppText>
 
-        {favorites.length === 0 ? (
+        {favoriteDogs.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Icon name="heart-outline" size={64} color="#ccc" />
             <MyAppText style={styles.emptyText}>
@@ -27,14 +45,33 @@ const FavoriteScreen: React.FC = () => {
             </MyAppText>
           </View>
         ) : (
-          favorites.map((dog, index) => (
-            <TouchableOpacity key={index} style={styles.card}>
-              <MyAppText style={styles.cardText}>{dog.name}</MyAppText>
+          favoriteDogs.map(([name, dogData]) => (
+            <TouchableOpacity
+              key={name}
+              style={styles.card}
+              activeOpacity={0.7}>
+              {dogData.imgUrl ? (
+                <Image
+                  source={dogData.imgUrl}
+                  style={styles.dogImage}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={styles.placeholderImage}>
+                  <Icon name="dog" size={48} color="#ccc" />
+                </View>
+              )}
+              <View style={styles.textContainer}>
+                <MyAppText style={styles.cardTitle}>{name}</MyAppText>
+                <MyAppText style={styles.cardInfo} numberOfLines={3}>
+                  {dogData.info}
+                </MyAppText>
+              </View>
             </TouchableOpacity>
           ))
         )}
       </ScrollView>
-    </Layout>
+    </View>
   );
 };
 
@@ -63,18 +100,44 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   card: {
+    flexDirection: 'row',
     backgroundColor: '#FFFFFF',
-    padding: moderateScale(16),
+    padding: moderateScale(12),
     borderRadius: 12,
     marginBottom: moderateVerticalScale(12),
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 4,
+    alignItems: 'center',
   },
-  cardText: {
+  dogImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 12,
+    marginRight: moderateScale(12),
+  },
+  placeholderImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 12,
+    backgroundColor: '#EEE',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: moderateScale(12),
+  },
+  textContainer: {
+    flex: 1,
+  },
+  cardTitle: {
     fontSize: 20,
-    color: '#333',
+    fontWeight: 'bold',
+    color: '#D63384',
+    marginBottom: 4,
+  },
+  cardInfo: {
+    fontSize: 14,
+    color: '#555',
   },
 });
 

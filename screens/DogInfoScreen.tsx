@@ -15,6 +15,13 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Layout from '../components/Layout';
 import MyAppText from '../components/MyAppText';
 
+import {useDispatch, useSelector} from 'react-redux';
+import type {RootState} from '../redux/store'; // adjust path to your store setup
+import {
+  addFavoriteDog,
+  removeFavoriteDog,
+} from '../redux/slices/favoritesSlice'; // adjust path
+
 // Navigation types
 type RootStackParamList = {
   DogInfo: {dogName: string};
@@ -27,18 +34,30 @@ const DogInfoScreen = () => {
   const route = useRoute<DogInfoRouteProp>();
   const {dogName} = route.params;
 
+  const dispatch = useDispatch();
+
+  // Read favorite info from Redux store
+  const favoriteData = useSelector(
+    (state: RootState) => state.favorites[dogName],
+  );
+
   const [dogInfo, setDogInfo] = useState<string>('');
   const [dogImgUrl, setDogImgUrl] = useState<ImageSourcePropType>();
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
+  // Sync local favorite state with Redux on mount and when favoriteData changes
   useEffect(() => {
-    getDogInfoFromApi();
-    getDogImageFromApi();
-    return () => {
-      console.log('DogInfoScreen.tsx cleanup');
-    };
-  }, []);
+    if (favoriteData) {
+      setDogInfo(favoriteData.info);
+      if (favoriteData.imgUrl) setDogImgUrl(favoriteData.imgUrl);
+      setIsFavorite(favoriteData.isFavorite);
+    } else {
+      getDogInfoFromApi();
+      getDogImageFromApi();
+    }
+  }, [dogName, favoriteData]);
 
+  // Fetch dog info from API
   const getDogInfoFromApi = () => {
     axios
       .get(
@@ -55,6 +74,7 @@ const DogInfoScreen = () => {
       });
   };
 
+  // Fetch dog image from API
   const getDogImageFromApi = () => {
     if (dogName === ' Rat Terrier') {
       setDogImgUrl(require('../assets/rat_terrier_eddie.jpg'));
@@ -78,9 +98,21 @@ const DogInfoScreen = () => {
       });
   };
 
+  // Toggle favorite and update Redux store accordingly
   const toggleFavorite = () => {
-    setIsFavorite(prev => !prev);
-    // Add persistent save logic if needed
+    if (isFavorite) {
+      dispatch(removeFavoriteDog(dogName));
+      setIsFavorite(false);
+    } else {
+      dispatch(
+        addFavoriteDog({
+          name: dogName,
+          info: dogInfo,
+          imgUrl: dogImgUrl,
+        }),
+      );
+      setIsFavorite(true);
+    }
   };
 
   return (
