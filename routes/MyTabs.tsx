@@ -1,7 +1,7 @@
 import React from 'react';
 
 import HomeScreenStack from './HomeScreenStack';
-import QuizScreen from '../screens/QuizScreen';
+import FavoriteScreen from '../screens/FavoriteScreen';
 // import DogInfoScreen from '../screens/DogInfoScreen';
 
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
@@ -27,9 +27,9 @@ function MyTabs() {
       />
       <Tab.Screen
         name="QuizScreen"
-        component={QuizScreen}
+        component={FavoriteScreen}
         options={{
-          tabBarLabel: 'Quiz',
+          tabBarLabel: 'Favorite',
           tabBarIcon: ({color}) => (
             <MaterialCommunityIcons name="paw" color={color} size={26} />
           ),

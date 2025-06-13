@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, Image, StyleSheet} from 'react-native';
+import {Text, Image, StyleSheet, Button} from 'react-native';
 
 import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 
@@ -49,6 +49,7 @@ const HomeScreen = ({navigation}) => {
         Choose a dog breed to learn about:
       </MyAppText>
       <DropdownComponent navigation={navigation} />
+      <Button title="QUIZ" onPress={() => navigation.navigate('QuizScreen')} />
     </Layout>
   );
 };

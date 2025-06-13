@@ -5,21 +5,31 @@ import {
   Image,
   View,
   TouchableOpacity,
+  ImageSourcePropType,
 } from 'react-native';
 
 import axios from 'axios';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Layout from '../components/Layout';
 import MyAppText from '../components/MyAppText';
 
-const DogInfoScreen = ({route}) => {
-  const {dogName} = route.params;
-  const navigation = useNavigation();
+// Navigation types
+type RootStackParamList = {
+  DogInfo: {dogName: string};
+};
 
-  const [dogInfo, setDogInfo] = useState('');
-  const [dogImgUrl, setDogImgUrl] = useState('');
+type DogInfoRouteProp = RouteProp<RootStackParamList, 'DogInfo'>;
+
+const DogInfoScreen = () => {
+  const navigation = useNavigation();
+  const route = useRoute<DogInfoRouteProp>();
+  const {dogName} = route.params;
+
+  const [dogInfo, setDogInfo] = useState<string>('');
+  const [dogImgUrl, setDogImgUrl] = useState<ImageSourcePropType>();
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
   useEffect(() => {
     getDogInfoFromApi();
@@ -32,13 +42,12 @@ const DogInfoScreen = ({route}) => {
   const getDogInfoFromApi = () => {
     axios
       .get(
-        'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' +
-          dogName,
+        `https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${dogName}`,
       )
       .then(response => {
-        let responseData = response.data.query.pages;
-        var values = Object.values(responseData);
-        var extractValue = values[0].extract;
+        const responseData = response.data.query.pages;
+        const values = Object.values(responseData) as {extract: string}[];
+        const extractValue = values[0]?.extract || 'No info available.';
         setDogInfo(extractValue);
       })
       .catch(error => {
@@ -47,7 +56,6 @@ const DogInfoScreen = ({route}) => {
   };
 
   const getDogImageFromApi = () => {
-    // Easter Egg for Eddie
     if (dogName === ' Rat Terrier') {
       setDogImgUrl(require('../assets/rat_terrier_eddie.jpg'));
       return;
@@ -55,19 +63,24 @@ const DogInfoScreen = ({route}) => {
 
     axios
       .get(
-        'https://en.wikipedia.org/w/api.php?action=query&titles=' +
-          dogName +
-          '&prop=pageimages&format=json&pithumbsize=300',
+        `https://en.wikipedia.org/w/api.php?action=query&titles=${dogName}&prop=pageimages&format=json&pithumbsize=300`,
       )
       .then(response => {
-        var data = response.data.query.pages;
-        var firstKey = Object.keys(data)[0];
-        var imgUrl = data[firstKey]['thumbnail']['source'];
-        setDogImgUrl({uri: imgUrl});
+        const data = response.data.query.pages;
+        const firstKey = Object.keys(data)[0];
+        const imgUrl = data[firstKey]?.thumbnail?.source;
+        if (imgUrl) {
+          setDogImgUrl({uri: imgUrl});
+        }
       })
       .catch(error => {
-        console.log('error is ', error);
+        console.log('getDogImageFromApi() error is ', error);
       });
+  };
+
+  const toggleFavorite = () => {
+    setIsFavorite(prev => !prev);
+    // Add persistent save logic if needed
   };
 
   return (
@@ -79,15 +92,27 @@ const DogInfoScreen = ({route}) => {
           <Icon name="arrow-left" size={24} color="#333" />
         </TouchableOpacity>
 
-        {dogImgUrl === '' ? (
-          <MyAppText>Sorry! No image url found from API :C</MyAppText>
-        ) : (
-          <Image
-            source={dogImgUrl}
-            style={styles.imgStyle}
-            resizeMode="cover"
-          />
-        )}
+        <View style={styles.imageContainer}>
+          {dogImgUrl ? (
+            <Image
+              source={dogImgUrl}
+              style={styles.imgStyle}
+              resizeMode="cover"
+            />
+          ) : (
+            <MyAppText>Sorry! No image url found from API :C</MyAppText>
+          )}
+
+          <TouchableOpacity
+            style={styles.favoriteButton}
+            onPress={toggleFavorite}>
+            <Icon
+              name={isFavorite ? 'heart' : 'heart-outline'}
+              size={28}
+              color={isFavorite ? '#D63384' : '#888'}
+            />
+          </TouchableOpacity>
+        </View>
 
         <MyAppText style={styles.header}>{dogName}</MyAppText>
         <MyAppText style={styles.text}>{dogInfo}</MyAppText>
@@ -110,11 +135,24 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#F8D7DA',
   },
+  imageContainer: {
+    width: '100%',
+    position: 'relative',
+    marginBottom: 20,
+  },
   imgStyle: {
     width: '100%',
     height: 300,
     borderRadius: 12,
-    marginBottom: 20,
+  },
+  favoriteButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    backgroundColor: '#fff',
+    borderRadius: 24,
+    padding: 6,
+    elevation: 3,
   },
   header: {
     fontSize: 26,
