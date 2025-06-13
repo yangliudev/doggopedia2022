@@ -16,7 +16,7 @@ const Layout: FC<Props> = ({children, ...rest}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffedfe',
     alignItems: 'center',
     justifyContent: 'center',
   },

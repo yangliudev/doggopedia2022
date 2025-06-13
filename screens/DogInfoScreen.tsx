@@ -1,13 +1,22 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, ScrollView, Image} from 'react-native';
-import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
+import {
+  StyleSheet,
+  ScrollView,
+  Image,
+  View,
+  TouchableOpacity,
+} from 'react-native';
+
 import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Layout from '../components/Layout';
 import MyAppText from '../components/MyAppText';
 
 const DogInfoScreen = ({route}) => {
   const {dogName} = route.params;
+  const navigation = useNavigation();
 
   const [dogInfo, setDogInfo] = useState('');
   const [dogImgUrl, setDogImgUrl] = useState('');
@@ -28,10 +37,8 @@ const DogInfoScreen = ({route}) => {
       )
       .then(response => {
         let responseData = response.data.query.pages;
-
         var values = Object.values(responseData);
         var extractValue = values[0].extract;
-
         setDogInfo(extractValue);
       })
       .catch(error => {
@@ -66,13 +73,19 @@ const DogInfoScreen = ({route}) => {
   return (
     <Layout>
       <ScrollView contentContainerStyle={styles.container}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}>
+          <Icon name="arrow-left" size={24} color="#333" />
+        </TouchableOpacity>
+
         {dogImgUrl === '' ? (
           <MyAppText>Sorry! No image url found from API :C</MyAppText>
         ) : (
           <Image
             source={dogImgUrl}
             style={styles.imgStyle}
-            resizeMode="contain"
+            resizeMode="cover"
           />
         )}
 
@@ -88,23 +101,33 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#FFF5F8',
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+    marginBottom: 10,
+    padding: 6,
+    borderRadius: 20,
+    backgroundColor: '#F8D7DA',
   },
   imgStyle: {
     width: '100%',
-    height: 200,
+    height: 300,
+    borderRadius: 12,
     marginBottom: 20,
   },
   header: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
+    color: '#D63384',
   },
   text: {
-    fontSize: 20,
+    fontSize: 18,
+    lineHeight: 26,
     textAlign: 'left',
-    marginBottom: 20,
+    color: '#444',
   },
 });
 
