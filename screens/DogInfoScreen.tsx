@@ -156,9 +156,10 @@ const DogInfoScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
     alignItems: 'center',
-    backgroundColor: '#FFF5F8',
+    // backgroundColor: '#FFF5F8',
   },
   backButton: {
     alignSelf: 'flex-start',

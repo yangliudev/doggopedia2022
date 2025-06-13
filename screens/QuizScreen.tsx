@@ -1,170 +1,178 @@
 import React, {useEffect, useState} from 'react';
-import styled from 'styled-components/native';
 import {
-  StyleSheet,
-  Image,
   Alert,
-  View,
-  TouchableOpacity,
+  Image,
+  StyleSheet,
   Text,
+  TextInput,
+  TouchableOpacity,
 } from 'react-native';
-import {moderateVerticalScale} from 'react-native-size-matters';
+import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 
 import Layout from '../components/Layout';
 import MyAppText from '../components/MyAppText';
 
-const QuizScreen = () => {
+interface Props {
+  navigation: any;
+}
+
+const QuizScreen: React.FC<Props> = ({navigation}) => {
   const [dogImgUrlLink, setDogImgUrlLink] = useState('');
   const [dogName, setDogName] = useState('');
-
   const [userInput, setUserInput] = useState('');
 
   useEffect(() => {
     getRandomDogImage();
     return () => {
-      console.log('QuizScreen.tsx cleanup');
+      console.log('QuizScreen cleanup');
     };
   }, []);
 
-  const getRandomDogImage = () => {
-    axios
-      .get('https://dog.ceo/api/breeds/image/random')
-      .then(response => {
-        let responseData = response.data;
-
-        const parts = responseData.message.split('/');
-        const breedPart = parts[parts.length - 2];
-
-        setDogImgUrlLink(responseData.message);
-        setDogName(breedPart);
-        setUserInput('');
-
-        console.log('quiz responseData ', responseData, breedPart);
-      })
-      .catch(error => {
-        console.log('getRandomDogImage() error is ', error);
-      });
+  const getRandomDogImage = async () => {
+    try {
+      const response = await axios.get(
+        'https://dog.ceo/api/breeds/image/random',
+      );
+      const parts = response.data.message.split('/');
+      const breedPart = parts[parts.length - 2];
+      setDogImgUrlLink(response.data.message);
+      setDogName(breedPart);
+      setUserInput('');
+    } catch (error) {
+      console.log('Error fetching dog image:', error);
+    }
   };
 
-  const handleUserInput = (input: any) => {
-    setUserInput(input);
-  };
-
-  function checkInputGuess() {
+  const checkInputGuess = () => {
     const m = userInput.length;
     const n = dogName.length;
+    const dp = Array.from({length: m + 1}, () => Array(n + 1).fill(0));
 
-    // Create a 2D array to store the Levenshtein distances
-    const dp = Array(m + 1)
-      .fill(null)
-      .map(() => Array(n + 1).fill(0));
+    for (let i = 1; i <= m; i++) dp[i][0] = i;
+    for (let j = 1; j <= n; j++) dp[0][j] = j;
 
-    // Initialize the first row and column
-    for (let i = 1; i <= m; i++) {
-      dp[i][0] = i;
-    }
-
-    for (let j = 1; j <= n; j++) {
-      dp[0][j] = j;
-    }
-
-    // Calculate the Levenshtein distance
     for (let i = 1; i <= m; i++) {
       for (let j = 1; j <= n; j++) {
         if (userInput[i - 1] === dogName[j - 1]) {
           dp[i][j] = dp[i - 1][j - 1];
         } else {
           dp[i][j] = Math.min(
-            dp[i - 1][j] + 1, // deletion
-            dp[i][j - 1] + 1, // insertion
-            dp[i - 1][j - 1] + 1, // substitution
+            dp[i - 1][j] + 1,
+            dp[i][j - 1] + 1,
+            dp[i - 1][j - 1] + 1,
           );
         }
       }
     }
 
-    // The Levenshtein distance is the value at the bottom-right corner
     const levenshteinDistance = dp[m][n];
-
-    // Adjust the threshold as desired (lower value means a closer match)
     const threshold = 3;
 
-    // Return true if the Levenshtein distance is within the threshold
     if (levenshteinDistance <= threshold) {
-      Alert.alert('Congratulations!', 'You got it :)');
+      Alert.alert('Correct', 'Nice guess! Fetching a new dog...');
       getRandomDogImage();
     } else {
-      Alert.alert('Sorry!', 'Better luck next time! :(');
+      Alert.alert('Incorrect', 'Try again or shuffle a new dog.');
     }
-  }
-
-  const Separator = () => <View style={styles.separator} />;
+  };
 
   return (
     <Layout>
-      <MyAppText style={{fontSize: 26}}>Who's that doggo?</MyAppText>
-      <Image
-        style={styles.image}
-        source={{
-          uri: dogImgUrlLink,
-        }}
-      />
-      {/* <Button title="Shuffle doggo" onPress={() => getRandomDogImage()} /> */}
-      <Ionicons
-        name="ios-shuffle"
-        style={{fontSize: 36, color: '#000'}}
-        onPress={() => getRandomDogImage()}
-      />
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}>
+        <Icon name="arrow-left" size={24} color="#333" />
+      </TouchableOpacity>
 
-      <Separator />
+      <MyAppText style={styles.headerTitle}>Who's That Doggo?</MyAppText>
 
-      <TextInputStyled
-        onChangeText={text => handleUserInput(text)}
+      <Image source={{uri: dogImgUrlLink}} style={styles.image} />
+
+      <TouchableOpacity onPress={getRandomDogImage} style={styles.shuffleIcon}>
+        <Ionicons name="ios-shuffle" size={32} color="#007AFF" />
+      </TouchableOpacity>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Enter dog breed"
         value={userInput}
+        onChangeText={setUserInput}
+        placeholderTextColor="#666"
       />
 
-      <Separator />
-      <Separator />
-
-      <TouchableOpacity style={styles.button} onPress={() => checkInputGuess()}>
+      <TouchableOpacity style={styles.button} onPress={checkInputGuess}>
         <Text style={styles.buttonText}>Check</Text>
       </TouchableOpacity>
     </Layout>
   );
 };
 
-const TextInputStyled = styled.TextInput`
-  width: 150px;
-  height: 40px;
-  border-radius: 5px;
-  background-color: #c5ddfa;
-  color: #000;
-`;
-
 const styles = StyleSheet.create({
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: moderateVerticalScale(16),
+  },
   image: {
-    width: '50%',
-    height: '25%',
+    width: '90%',
+    height: 200,
+    borderRadius: 12,
+    resizeMode: 'cover',
+    marginBottom: moderateVerticalScale(16),
+    alignSelf: 'center',
+  },
+  shuffleIcon: {
+    marginBottom: moderateVerticalScale(12),
+    alignSelf: 'center',
+  },
+  input: {
+    width: '80%',
+    height: 44,
+    backgroundColor: '#EEF1F6',
     borderRadius: 10,
-    marginTop: moderateVerticalScale(20),
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: '#000',
+    alignSelf: 'center',
     marginBottom: moderateVerticalScale(20),
   },
-  separator: {
-    marginVertical: moderateVerticalScale(5),
-  },
   button: {
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    backgroundColor: '#E91E63',
+    paddingVertical: 14,
+    paddingHorizontal: 36,
+    borderRadius: 30,
+    alignSelf: 'center',
+    elevation: 3,
   },
   buttonText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
     textAlign: 'center',
+  },
+  topContainer: {
+    width: '100%',
+    paddingHorizontal: moderateScale(16),
+    marginBottom: moderateVerticalScale(16),
+  },
+
+  backButton: {
+    alignSelf: 'flex-start', // ensures it aligns to the left
+    marginLeft: 20,
+    padding: 6,
+    borderRadius: 20,
+    backgroundColor: '#F8D7DA',
+    marginBottom: moderateVerticalScale(8), // spacing between button and title
+  },
+
+  headerTitle: {
+    fontSize: moderateScale(22),
+    fontWeight: '600',
+    color: '#1A1A1A',
+    textAlign: 'left',
   },
 });
 
