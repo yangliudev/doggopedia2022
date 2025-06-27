@@ -12,31 +12,35 @@ import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 import Layout from '../components/Layout';
 import MyAppText from '../components/MyAppText';
 
-import {useSelector} from 'react-redux';
-import type {RootState} from '../redux/store'; // adjust path to your store
+import {useSelector, useDispatch} from 'react-redux';
+import type {RootState} from '../redux/store';
+import {removeFavoriteDog} from '../redux/slices/favoritesSlice';
 
 type DogState = {
   info: string;
-  imgUrl?: any; // ImageSourcePropType might work here
+  imgUrl?: any;
   isFavorite: boolean;
 };
 
 const FavoriteScreen: React.FC = () => {
-  // Select favorites from Redux store
+  const dispatch = useDispatch();
   const favorites = useSelector((state: RootState) => state.favorites) as {
     [dogName: string]: DogState;
   };
 
-  // Convert to array of entries to map over
   const favoriteDogs = Object.entries(favorites).filter(
     ([, dogData]) => dogData.isFavorite,
   );
 
-  return (
-    <View>
-      <ScrollView contentContainerStyle={styles.container}>
-        <MyAppText style={styles.title}>My Favorite Dogs</MyAppText>
+  const handleRemove = (name: string) => {
+    dispatch(removeFavoriteDog(name));
+  };
 
+  return (
+    <Layout>
+      <MyAppText style={styles.title}>My Favorite Dogs</MyAppText>
+
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         {favoriteDogs.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Icon name="heart-outline" size={64} color="#ccc" />
@@ -46,10 +50,7 @@ const FavoriteScreen: React.FC = () => {
           </View>
         ) : (
           favoriteDogs.map(([name, dogData]) => (
-            <TouchableOpacity
-              key={name}
-              style={styles.card}
-              activeOpacity={0.7}>
+            <View key={name} style={styles.card}>
               {dogData.imgUrl ? (
                 <Image
                   source={dogData.imgUrl}
@@ -67,20 +68,21 @@ const FavoriteScreen: React.FC = () => {
                   {dogData.info}
                 </MyAppText>
               </View>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.removeButton}
+                onPress={() => handleRemove(name)}
+                hitSlop={10}>
+                <Icon name="trash-can-outline" size={22} color="#D63384" />
+              </TouchableOpacity>
+            </View>
           ))
         )}
       </ScrollView>
-    </View>
+    </Layout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: moderateScale(20),
-    flexGrow: 1,
-    backgroundColor: '#FFF5F8',
-  },
   title: {
     fontSize: 26,
     fontWeight: 'bold',
@@ -88,8 +90,12 @@ const styles = StyleSheet.create({
     marginBottom: moderateVerticalScale(20),
     textAlign: 'center',
   },
+  scrollContent: {
+    paddingHorizontal: moderateScale(20),
+    paddingBottom: 40,
+    width: '100%',
+  },
   emptyContainer: {
-    flex: 1,
     alignItems: 'center',
     marginTop: moderateVerticalScale(40),
   },
@@ -110,6 +116,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 4,
     alignItems: 'center',
+    width: '100%',
   },
   dogImage: {
     width: 80,
@@ -138,6 +145,10 @@ const styles = StyleSheet.create({
   cardInfo: {
     fontSize: 14,
     color: '#555',
+  },
+  removeButton: {
+    padding: 6,
+    marginLeft: 8,
   },
 });
 

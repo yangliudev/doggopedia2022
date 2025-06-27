@@ -38,7 +38,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     <Layout>
       <MyAppText style={styles.title}>Doggopedia</MyAppText>
 
-      <Image source={require('../assets/doggoMain.png')} style={styles.image} />
+      <Image source={require('../assets/dog.jpeg')} style={styles.image} />
 
       <MyAppText style={styles.subtitle}>
         Select a dog breed to explore:
