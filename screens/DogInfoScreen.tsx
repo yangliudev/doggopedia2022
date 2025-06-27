@@ -5,40 +5,68 @@ import {
   Image,
   View,
   TouchableOpacity,
+  ImageSourcePropType,
 } from 'react-native';
 
 import axios from 'axios';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Layout from '../components/Layout';
 import MyAppText from '../components/MyAppText';
 
-const DogInfoScreen = ({route}) => {
-  const {dogName} = route.params;
+import {useDispatch, useSelector} from 'react-redux';
+import type {RootState} from '../redux/store'; // adjust path to your store setup
+import {
+  addFavoriteDog,
+  removeFavoriteDog,
+} from '../redux/slices/favoritesSlice'; // adjust path
+
+// Navigation types
+type RootStackParamList = {
+  DogInfo: {dogName: string};
+};
+
+type DogInfoRouteProp = RouteProp<RootStackParamList, 'DogInfo'>;
+
+const DogInfoScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute<DogInfoRouteProp>();
+  const {dogName} = route.params;
 
-  const [dogInfo, setDogInfo] = useState('');
-  const [dogImgUrl, setDogImgUrl] = useState('');
+  const dispatch = useDispatch();
 
+  // Read favorite info from Redux store
+  const favoriteData = useSelector(
+    (state: RootState) => state.favorites[dogName],
+  );
+
+  const [dogInfo, setDogInfo] = useState<string>('');
+  const [dogImgUrl, setDogImgUrl] = useState<ImageSourcePropType>();
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
+  // Sync local favorite state with Redux on mount and when favoriteData changes
   useEffect(() => {
-    getDogInfoFromApi();
-    getDogImageFromApi();
-    return () => {
-      console.log('DogInfoScreen.tsx cleanup');
-    };
-  }, []);
+    if (favoriteData) {
+      setDogInfo(favoriteData.info);
+      if (favoriteData.imgUrl) setDogImgUrl(favoriteData.imgUrl);
+      setIsFavorite(favoriteData.isFavorite);
+    } else {
+      getDogInfoFromApi();
+      getDogImageFromApi();
+    }
+  }, [dogName, favoriteData]);
 
+  // Fetch dog info from API
   const getDogInfoFromApi = () => {
     axios
       .get(
-        'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' +
-          dogName,
+        `https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${dogName}`,
       )
       .then(response => {
-        let responseData = response.data.query.pages;
-        var values = Object.values(responseData);
-        var extractValue = values[0].extract;
+        const responseData = response.data.query.pages;
+        const values = Object.values(responseData) as {extract: string}[];
+        const extractValue = values[0]?.extract || 'No info available.';
         setDogInfo(extractValue);
       })
       .catch(error => {
@@ -46,8 +74,8 @@ const DogInfoScreen = ({route}) => {
       });
   };
 
+  // Fetch dog image from API
   const getDogImageFromApi = () => {
-    // Easter Egg for Eddie
     if (dogName === ' Rat Terrier') {
       setDogImgUrl(require('../assets/rat_terrier_eddie.jpg'));
       return;
@@ -55,19 +83,36 @@ const DogInfoScreen = ({route}) => {
 
     axios
       .get(
-        'https://en.wikipedia.org/w/api.php?action=query&titles=' +
-          dogName +
-          '&prop=pageimages&format=json&pithumbsize=300',
+        `https://en.wikipedia.org/w/api.php?action=query&titles=${dogName}&prop=pageimages&format=json&pithumbsize=300`,
       )
       .then(response => {
-        var data = response.data.query.pages;
-        var firstKey = Object.keys(data)[0];
-        var imgUrl = data[firstKey]['thumbnail']['source'];
-        setDogImgUrl({uri: imgUrl});
+        const data = response.data.query.pages;
+        const firstKey = Object.keys(data)[0];
+        const imgUrl = data[firstKey]?.thumbnail?.source;
+        if (imgUrl) {
+          setDogImgUrl({uri: imgUrl});
+        }
       })
       .catch(error => {
-        console.log('error is ', error);
+        console.log('getDogImageFromApi() error is ', error);
       });
+  };
+
+  // Toggle favorite and update Redux store accordingly
+  const toggleFavorite = () => {
+    if (isFavorite) {
+      dispatch(removeFavoriteDog(dogName));
+      setIsFavorite(false);
+    } else {
+      dispatch(
+        addFavoriteDog({
+          name: dogName,
+          info: dogInfo,
+          imgUrl: dogImgUrl,
+        }),
+      );
+      setIsFavorite(true);
+    }
   };
 
   return (
@@ -79,15 +124,27 @@ const DogInfoScreen = ({route}) => {
           <Icon name="arrow-left" size={24} color="#333" />
         </TouchableOpacity>
 
-        {dogImgUrl === '' ? (
-          <MyAppText>Sorry! No image url found from API :C</MyAppText>
-        ) : (
-          <Image
-            source={dogImgUrl}
-            style={styles.imgStyle}
-            resizeMode="cover"
-          />
-        )}
+        <View style={styles.imageContainer}>
+          {dogImgUrl ? (
+            <Image
+              source={dogImgUrl}
+              style={styles.imgStyle}
+              resizeMode="cover"
+            />
+          ) : (
+            <MyAppText>Sorry! No image url found from API :C</MyAppText>
+          )}
+
+          <TouchableOpacity
+            style={styles.favoriteButton}
+            onPress={toggleFavorite}>
+            <Icon
+              name={isFavorite ? 'heart' : 'heart-outline'}
+              size={28}
+              color={isFavorite ? '#D63384' : '#888'}
+            />
+          </TouchableOpacity>
+        </View>
 
         <MyAppText style={styles.header}>{dogName}</MyAppText>
         <MyAppText style={styles.text}>{dogInfo}</MyAppText>
@@ -99,9 +156,10 @@ const DogInfoScreen = ({route}) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
     alignItems: 'center',
-    backgroundColor: '#FFF5F8',
+    // backgroundColor: '#FFF5F8',
   },
   backButton: {
     alignSelf: 'flex-start',
@@ -110,11 +168,24 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#F8D7DA',
   },
+  imageContainer: {
+    width: '100%',
+    position: 'relative',
+    marginBottom: 20,
+  },
   imgStyle: {
     width: '100%',
     height: 300,
     borderRadius: 12,
-    marginBottom: 20,
+  },
+  favoriteButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    backgroundColor: '#fff',
+    borderRadius: 24,
+    padding: 6,
+    elevation: 3,
   },
   header: {
     fontSize: 26,

@@ -1,63 +1,106 @@
 import React, {useEffect, useState} from 'react';
-import {Text, Image, StyleSheet} from 'react-native';
-
+import {
+  Image,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 
-// import {useDispatch, useSelector} from 'react-redux';
 import Layout from '../components/Layout';
-// import {apiRequest} from '../redux/slices/apiRequest';
-// import instance from '../utilities/axios';
-// import axios from 'axios';
 import MyAppText from '../components/MyAppText';
-
 import DropdownComponent from '../components/DropdownComponent';
 
-const HomeScreen = ({navigation}) => {
-  // const dispatch = useDispatch()<any>;
-  // dispatch(apiRequest('Craig%20Noone'));
-  // const {dataInfo} = useSelector(state => state);
+const wikiJsonObj = require('../api/cleanedData.json');
+const jsonDataArray = wikiJsonObj[0].dogBreeds.split(',');
 
-  const [dropdownList, setdropdownList] = useState([]);
+interface HomeScreenProps {
+  navigation: any;
+}
 
-  // JSON data scraped off of Wikipedia's Dog Breeds List
-  let wikiJsonObj = require('../api/cleanedData.json');
-  let wikiJsonString = wikiJsonObj[0].dogBreeds;
-  let jsonDataArray = wikiJsonString.split(',');
+const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
+  const [dropdownList, setDropdownList] = useState<
+    {key: string; value: string}[]
+  >([]);
 
   useEffect(() => {
-    if (dropdownList.length === 0) populateDropdownList();
-    return () => {
-      console.log('clean up');
-    };
-  }, []);
-
-  const populateDropdownList = () => {
-    let data = [];
-
-    for (let i = 0; i < jsonDataArray.length; i++) {
-      data.push({key: i, value: jsonDataArray[i]});
+    if (dropdownList.length === 0) {
+      const data = jsonDataArray.map((breed: string, index: number) => ({
+        key: index.toString(),
+        value: breed.trim(),
+      }));
+      setDropdownList(data);
     }
-
-    setdropdownList(data);
-  };
+  }, [dropdownList]);
 
   return (
     <Layout>
-      <MyAppText style={{fontSize: 36}}>Doggopedia</MyAppText>
-      <Image source={require('../assets/doggoMain.png')} style={styles.image} />
-      <MyAppText style={{fontSize: 16}}>
-        Choose a dog breed to learn about:
+      <MyAppText style={styles.title}>Doggopedia</MyAppText>
+
+      <Image source={require('../assets/dog.jpeg')} style={styles.image} />
+
+      <MyAppText style={styles.subtitle}>
+        Select a dog breed to explore:
       </MyAppText>
-      <DropdownComponent navigation={navigation} />
+
+      <View style={styles.dropdownWrapper}>
+        <DropdownComponent
+          dropdownData={dropdownList}
+          navigation={navigation}
+        />
+      </View>
+
+      <TouchableOpacity
+        style={styles.quizButton}
+        onPress={() => navigation.navigate('QuizScreen')}
+        activeOpacity={0.85}>
+        <MyAppText style={styles.quizButtonText}>Take the Dog Quiz</MyAppText>
+      </TouchableOpacity>
     </Layout>
   );
 };
 
 const styles = StyleSheet.create({
+  title: {
+    fontSize: moderateScale(32),
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: moderateVerticalScale(16),
+  },
   image: {
-    width: moderateScale(150),
-    height: moderateScale(150),
+    width: moderateScale(160),
+    height: moderateScale(160),
+    borderRadius: moderateScale(80),
     marginBottom: moderateVerticalScale(20),
+  },
+  subtitle: {
+    fontSize: moderateScale(16),
+    color: '#444',
+    marginBottom: moderateVerticalScale(12),
+    textAlign: 'center',
+  },
+  dropdownWrapper: {
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: moderateVerticalScale(24),
+  },
+  quizButton: {
+    backgroundColor: '#E91E63',
+    paddingVertical: moderateVerticalScale(14),
+    paddingHorizontal: moderateScale(36),
+    borderRadius: moderateScale(30),
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  quizButtonText: {
+    fontSize: moderateScale(16),
+    fontWeight: '600',
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
 });
 
