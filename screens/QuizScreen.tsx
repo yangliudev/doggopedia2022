@@ -36,13 +36,18 @@ const QuizScreen: React.FC<Props> = ({navigation}) => {
       const response = await axios.get(
         'https://dog.ceo/api/breeds/image/random',
       );
-      const parts = response.data.message.split('/');
-      const breedPart = parts[parts.length - 2];
-      setDogImgUrlLink(response.data.message);
-      setDogName(breedPart);
-      setUserInput('');
+      if (response.data && response.data.message) {
+        const parts = response.data.message.split('/');
+        const breedPart = parts[parts.length - 2];
+        setDogImgUrlLink(response.data.message);
+        setDogName(breedPart || 'Unknown Breed');
+        setUserInput('');
+      } else {
+        console.log('Invalid response structure:', response.data);
+      }
     } catch (error) {
       console.log('Error fetching dog image:', error);
+      Alert.alert('Error', 'Failed to load dog image. Please try again.');
     }
   };
 
@@ -51,8 +56,12 @@ const QuizScreen: React.FC<Props> = ({navigation}) => {
     const n = dogName.length;
     const dp = Array.from({length: m + 1}, () => Array(n + 1).fill(0));
 
-    for (let i = 1; i <= m; i++) dp[i][0] = i;
-    for (let j = 1; j <= n; j++) dp[0][j] = j;
+    for (let i = 1; i <= m; i++) {
+      dp[i][0] = i;
+    }
+    for (let j = 1; j <= n; j++) {
+      dp[0][j] = j;
+    }
 
     for (let i = 1; i <= m; i++) {
       for (let j = 1; j <= n; j++) {

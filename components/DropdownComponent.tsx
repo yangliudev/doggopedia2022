@@ -1,50 +1,52 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const DropdownComponent = ({navigation}) => {
-  const [value, setValue] = useState(null);
+interface DropdownItem {
+  label: string;
+  value: number;
+}
+
+interface DropdownComponentProps {
+  navigation: any;
+  _dropdownData?: {key: string; value: string}[];
+}
+
+const DropdownComponent: React.FC<DropdownComponentProps> = ({navigation}) => {
+  const [value, setValue] = useState<DropdownItem | null>(null);
   const [isFocus, setIsFocus] = useState(false);
 
-  const renderLabel = () => {
-    if (value || isFocus) {
-      return (
-        <Text style={[styles.label, isFocus && {color: 'blue'}]}>
-          Dropdown label
-        </Text>
-      );
-    }
-    return null;
-  };
-
-  // Logic to populate dropdown
-
-  const [dropdownList, setdropdownList] = useState([]);
-
-  useEffect(() => {
-    if (dropdownList.length === 0) populateDropdownList();
-    return () => {
-      console.log('clean up');
-    };
-  }, []);
+  const [dropdownList, setdropdownList] = useState<DropdownItem[]>([]);
 
   // JSON data scraped off of Wikipedia's Dog Breeds List
-  let wikiJsonObj = require('../api/cleanedData.json');
-  let wikiJsonString = wikiJsonObj[0].dogBreeds;
-  let jsonDataArray = wikiJsonString.split(',');
+  const wikiJsonObj = require('../api/cleanedData.json');
+  const wikiJsonString = wikiJsonObj[0]?.dogBreeds;
 
-  const populateDropdownList = () => {
-    let data = [];
+  const populateDropdownList = React.useCallback(() => {
+    const jsonDataArray = wikiJsonString ? wikiJsonString.split(',') : [];
+    const data: DropdownItem[] = [];
 
     for (let i = 0; i < jsonDataArray.length; i++) {
-      data.push({label: jsonDataArray[i], value: i});
+      const breed = jsonDataArray[i];
+      if (breed && breed.trim()) {
+        data.push({label: breed.trim(), value: i});
+      }
     }
 
     setdropdownList(data);
-  };
+  }, [wikiJsonString]);
 
-  const evalSelectedText = dogName => {
+  useEffect(() => {
+    if (dropdownList.length === 0) {
+      populateDropdownList();
+    }
+    return () => {
+      console.log('clean up');
+    };
+  }, [dropdownList.length, populateDropdownList]);
+
+  const evalSelectedText = (dogName: string) => {
     console.log('SELECTED IS ', dogName);
     navigation.navigate('DogInfoScreen', {dogName: dogName});
   };
@@ -53,7 +55,7 @@ const DropdownComponent = ({navigation}) => {
     <View style={styles.container}>
       {/* {renderLabel()} */}
       <Dropdown
-        style={[styles.dropdown, isFocus && {borderColor: 'blue'}]}
+        style={[styles.dropdown, isFocus && styles.dropdownFocused]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -70,7 +72,7 @@ const DropdownComponent = ({navigation}) => {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
-          setValue(item.value);
+          setValue(item);
           setIsFocus(false);
           evalSelectedText(item.label);
         }}
@@ -100,6 +102,9 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 8,
+  },
+  dropdownFocused: {
+    borderColor: 'blue',
   },
   icon: {
     marginRight: 5,

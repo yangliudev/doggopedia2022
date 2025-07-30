@@ -71,7 +71,7 @@ const FavoriteScreen: React.FC = () => {
               <TouchableOpacity
                 style={styles.removeButton}
                 onPress={() => handleRemove(name)}
-                hitSlop={10}>
+                hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
                 <Icon name="trash-can-outline" size={22} color="#D63384" />
               </TouchableOpacity>
             </View>

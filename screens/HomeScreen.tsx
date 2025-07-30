@@ -1,39 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {
-  Image,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React from 'react';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 
 import Layout from '../components/Layout';
 import MyAppText from '../components/MyAppText';
 import DropdownComponent from '../components/DropdownComponent';
 
-const wikiJsonObj = require('../api/cleanedData.json');
-const jsonDataArray = wikiJsonObj[0].dogBreeds.split(',');
-
 interface HomeScreenProps {
   navigation: any;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
-  const [dropdownList, setDropdownList] = useState<
-    {key: string; value: string}[]
-  >([]);
-
-  useEffect(() => {
-    if (dropdownList.length === 0) {
-      const data = jsonDataArray.map((breed: string, index: number) => ({
-        key: index.toString(),
-        value: breed.trim(),
-      }));
-      setDropdownList(data);
-    }
-  }, [dropdownList]);
-
   return (
     <Layout>
       <MyAppText style={styles.title}>Doggopedia</MyAppText>
@@ -45,10 +22,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
       </MyAppText>
 
       <View style={styles.dropdownWrapper}>
-        <DropdownComponent
-          dropdownData={dropdownList}
-          navigation={navigation}
-        />
+        <DropdownComponent navigation={navigation} />
       </View>
 
       <TouchableOpacity

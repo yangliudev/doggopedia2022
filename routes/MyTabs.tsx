@@ -1,4 +1,5 @@
 import React from 'react';
+import {StyleSheet} from 'react-native';
 
 import HomeScreenStack from './HomeScreenStack';
 import FavoriteScreen from '../screens/FavoriteScreen';
@@ -14,7 +15,7 @@ function MyTabs() {
     <Tab.Navigator
       activeColor="#ff80ab"
       inactiveColor="#f8bbd0"
-      barStyle={{backgroundColor: '#880e4f'}}>
+      barStyle={styles.tabBar}>
       <Tab.Screen
         name="HomeScreenStack"
         component={HomeScreenStack}
@@ -26,7 +27,7 @@ function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="QuizScreen"
+        name="FavoriteScreen"
         component={FavoriteScreen}
         options={{
           tabBarLabel: 'Favorite',
@@ -38,5 +39,11 @@ function MyTabs() {
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBar: {
+    backgroundColor: '#880e4f',
+  },
+});
 
 export default MyTabs;

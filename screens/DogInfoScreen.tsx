@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   ImageSourcePropType,
+  ActivityIndicator,
 } from 'react-native';
 
 import axios from 'axios';
@@ -44,38 +45,34 @@ const DogInfoScreen = () => {
   const [dogInfo, setDogInfo] = useState<string>('');
   const [dogImgUrl, setDogImgUrl] = useState<ImageSourcePropType>();
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
-
-  // Sync local favorite state with Redux on mount and when favoriteData changes
-  useEffect(() => {
-    if (favoriteData) {
-      setDogInfo(favoriteData.info);
-      if (favoriteData.imgUrl) setDogImgUrl(favoriteData.imgUrl);
-      setIsFavorite(favoriteData.isFavorite);
-    } else {
-      getDogInfoFromApi();
-      getDogImageFromApi();
-    }
-  }, [dogName, favoriteData]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Fetch dog info from API
-  const getDogInfoFromApi = () => {
+  const getDogInfoFromApi = useCallback(() => {
     axios
       .get(
         `https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${dogName}`,
       )
       .then(response => {
-        const responseData = response.data.query.pages;
-        const values = Object.values(responseData) as {extract: string}[];
-        const extractValue = values[0]?.extract || 'No info available.';
-        setDogInfo(extractValue);
+        if (response.data && response.data.query && response.data.query.pages) {
+          const responseData = response.data.query.pages;
+          const values = Object.values(responseData) as {extract?: string}[];
+          const extractValue = values[0]?.extract || 'No info available.';
+          setDogInfo(extractValue);
+        } else {
+          setDogInfo('No info available.');
+        }
+        setIsLoading(false);
       })
       .catch(error => {
         console.log('getDogInfoFromApi() error is ', error);
+        setDogInfo('Error loading information. Please try again.');
+        setIsLoading(false);
       });
-  };
+  }, [dogName]);
 
   // Fetch dog image from API
-  const getDogImageFromApi = () => {
+  const getDogImageFromApi = useCallback(() => {
     if (dogName === ' Rat Terrier') {
       setDogImgUrl(require('../assets/rat_terrier_eddie.jpg'));
       return;
@@ -86,17 +83,34 @@ const DogInfoScreen = () => {
         `https://en.wikipedia.org/w/api.php?action=query&titles=${dogName}&prop=pageimages&format=json&pithumbsize=300`,
       )
       .then(response => {
-        const data = response.data.query.pages;
-        const firstKey = Object.keys(data)[0];
-        const imgUrl = data[firstKey]?.thumbnail?.source;
-        if (imgUrl) {
-          setDogImgUrl({uri: imgUrl});
+        if (response.data && response.data.query && response.data.query.pages) {
+          const data = response.data.query.pages;
+          const firstKey = Object.keys(data)[0];
+          const imgUrl = data[firstKey]?.thumbnail?.source;
+          if (imgUrl) {
+            setDogImgUrl({uri: imgUrl});
+          }
         }
       })
       .catch(error => {
         console.log('getDogImageFromApi() error is ', error);
       });
-  };
+  }, [dogName]);
+
+  // Sync local favorite state with Redux on mount and when favoriteData changes
+  useEffect(() => {
+    if (favoriteData) {
+      setDogInfo(favoriteData.info);
+      if (favoriteData.imgUrl) {
+        setDogImgUrl(favoriteData.imgUrl);
+      }
+      setIsFavorite(favoriteData.isFavorite);
+      setIsLoading(false);
+    } else {
+      getDogInfoFromApi();
+      getDogImageFromApi();
+    }
+  }, [dogName, favoriteData, getDogImageFromApi, getDogInfoFromApi]);
 
   // Toggle favorite and update Redux store accordingly
   const toggleFavorite = () => {
@@ -147,7 +161,16 @@ const DogInfoScreen = () => {
         </View>
 
         <MyAppText style={styles.header}>{dogName}</MyAppText>
-        <MyAppText style={styles.text}>{dogInfo}</MyAppText>
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#D63384" />
+            <MyAppText style={styles.loadingText}>
+              Loading information...
+            </MyAppText>
+          </View>
+        ) : (
+          <MyAppText style={styles.text}>{dogInfo}</MyAppText>
+        )}
       </ScrollView>
     </Layout>
   );
@@ -199,6 +222,17 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     textAlign: 'left',
     color: '#444',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#666',
   },
 });
 

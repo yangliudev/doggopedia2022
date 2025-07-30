@@ -2,12 +2,15 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 
 import MyTabs from './routes/MyTabs';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Start = () => {
   return (
-    <NavigationContainer>
-      <MyTabs />
-    </NavigationContainer>
+    <ErrorBoundary>
+      <NavigationContainer>
+        <MyTabs />
+      </NavigationContainer>
+    </ErrorBoundary>
   );
 };
 
