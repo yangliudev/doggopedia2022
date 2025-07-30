@@ -1,13 +1,15 @@
 import React from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
+import type {NavigationProp} from '@react-navigation/native';
+import type {HomeStackParamList} from '../types/navigation';
 
 import Layout from '../components/Layout';
 import MyAppText from '../components/MyAppText';
 import DropdownComponent from '../components/DropdownComponent';
 
 interface HomeScreenProps {
-  navigation: any;
+  navigation: NavigationProp<HomeStackParamList>;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {

@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import type {NavigationProp} from '@react-navigation/native';
+import type {HomeStackParamList} from '../types/navigation';
 
 interface DropdownItem {
   label: string;
@@ -9,8 +11,7 @@ interface DropdownItem {
 }
 
 interface DropdownComponentProps {
-  navigation: any;
-  _dropdownData?: {key: string; value: string}[];
+  navigation: NavigationProp<HomeStackParamList>;
 }
 
 const DropdownComponent: React.FC<DropdownComponentProps> = ({navigation}) => {
@@ -41,13 +42,9 @@ const DropdownComponent: React.FC<DropdownComponentProps> = ({navigation}) => {
     if (dropdownList.length === 0) {
       populateDropdownList();
     }
-    return () => {
-      console.log('clean up');
-    };
   }, [dropdownList.length, populateDropdownList]);
 
   const evalSelectedText = (dogName: string) => {
-    console.log('SELECTED IS ', dogName);
     navigation.navigate('DogInfoScreen', {dogName: dogName});
   };
 

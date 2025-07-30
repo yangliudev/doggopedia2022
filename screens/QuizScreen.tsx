@@ -14,9 +14,11 @@ import axios from 'axios';
 
 import Layout from '../components/Layout';
 import MyAppText from '../components/MyAppText';
+import type {NavigationProp} from '@react-navigation/native';
+import type {HomeStackParamList} from '../types/navigation';
 
 interface Props {
-  navigation: any;
+  navigation: NavigationProp<HomeStackParamList>;
 }
 
 const QuizScreen: React.FC<Props> = ({navigation}) => {
@@ -26,9 +28,6 @@ const QuizScreen: React.FC<Props> = ({navigation}) => {
 
   useEffect(() => {
     getRandomDogImage();
-    return () => {
-      console.log('QuizScreen cleanup');
-    };
   }, []);
 
   const getRandomDogImage = async () => {
