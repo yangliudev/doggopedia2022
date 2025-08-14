@@ -1,6 +1,6 @@
 # 🐶 Doggopedia
 
-Doggopedia is a fun and educational mobile app that allows users to explore dog breeds and test their knowledge with interactive quizzes. It combines data from Wikipedia and the Dog CEO API to offer detailed information and engaging experiences for dog lovers.
+Doggopedia is a fun and educational mobile app that allows users to explore dog breeds and test their knowledge with interactive quizzes. It uses Wikipedia and the MediaWiki API to offer detailed information and engaging experiences for dog lovers.
 
 ---
 
@@ -10,10 +10,10 @@ Doggopedia is a fun and educational mobile app that allows users to explore dog 
   Scrapes the [Wikipedia list of dog breeds](https://en.wikipedia.org/wiki/List_of_dog_breeds) to populate a searchable dropdown of dog breeds.
 
 - 📖 **Breed Info Viewer**  
-  Uses [Wikipedia’s MediaWiki API](https://en.wikipedia.org/w/api.php) to fetch detailed information and a representative image of the selected breed.
+  Uses [Wikipedia’s MediaWiki API](https://en.wikipedia.org/w/api.php) to fetch detailed information and a corresponding image of the selected breed.
 
 - 🧠 **Dog Quiz Game**  
-  Uses the [Dog CEO API](https://dog.ceo/dog-api/) to display a random dog image. The user guesses the breed name, and the app checks the answer using the **Levenshtein distance** algorithm to allow for minor spelling mistakes.
+  Uses [Wikipedia's MediaWiki API](https://en.wikipedia.org/w/api.php) to display a random dog image. The user guesses the breed name, and the app checks the answer using the **Levenshtein distance** algorithm to allow for minor spelling mistakes.
 
 ---
 
@@ -22,7 +22,6 @@ Doggopedia is a fun and educational mobile app that allows users to explore dog 
 - React Native
 - JavaScript/TypeScript
 - Wikipedia MediaWiki API
-- Dog CEO API
 - Levenshtein distance (fuzzy string matching)
 - Web scraping (for initial breed list)
 

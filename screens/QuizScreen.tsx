@@ -6,6 +6,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
+  View,
 } from 'react-native';
 import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -16,39 +18,100 @@ import Layout from '../components/Layout';
 import MyAppText from '../components/MyAppText';
 import type {NavigationProp} from '@react-navigation/native';
 import type {HomeStackParamList} from '../types/navigation';
+import cleanedData from '../api/cleanedData.json';
 
 interface Props {
   navigation: NavigationProp<HomeStackParamList>;
 }
 
 const QuizScreen: React.FC<Props> = ({navigation}) => {
-  const [dogImgUrlLink, setDogImgUrlLink] = useState('');
-  const [dogName, setDogName] = useState('');
-  const [userInput, setUserInput] = useState('');
+  const [dogImgUrlLink, setDogImgUrlLink] = useState<string>('');
+  const [dogName, setDogName] = useState<string>('');
+  const [userInput, setUserInput] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [dogBreedsList, setDogBreedsList] = useState<string[]>([]);
 
+  // Load dog breeds from the cleaned data JSON
   useEffect(() => {
-    getRandomDogImage();
+    const loadDogBreeds = () => {
+      try {
+        const wikiJsonString = cleanedData[0]?.dogBreeds;
+        const breeds = wikiJsonString
+          ? wikiJsonString.split(',').map((breed: string) => breed.trim())
+          : [];
+        setDogBreedsList(breeds);
+      } catch (error) {
+        console.error('Error loading dog breeds:', error);
+        Alert.alert(
+          'Error',
+          'Failed to load dog breeds. Please restart the app.',
+        );
+      }
+    };
+
+    loadDogBreeds();
   }, []);
 
+  // Function to get a random dog image using MediaWiki API
   const getRandomDogImage = async () => {
+    if (dogBreedsList.length === 0) {
+      return;
+    }
+
+    setIsLoading(true);
+    setUserInput('');
+
+    // Select a random dog breed from the list
+    const randomIndex = Math.floor(Math.random() * dogBreedsList.length);
+    const randomBreed = dogBreedsList[randomIndex];
+
     try {
+      // Fetch image using the MediaWiki API
       const response = await axios.get(
-        'https://dog.ceo/api/breeds/image/random',
+        `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(
+          randomBreed,
+        )}&prop=pageimages&format=json&pithumbsize=300&origin=*`,
       );
-      if (response.data && response.data.message) {
-        const parts = response.data.message.split('/');
-        const breedPart = parts[parts.length - 2];
-        setDogImgUrlLink(response.data.message);
-        setDogName(breedPart || 'Unknown Breed');
-        setUserInput('');
+
+      if (response.data && response.data.query && response.data.query.pages) {
+        const data = response.data.query.pages;
+        const firstKey = Object.keys(data)[0];
+        const imgUrl = data[firstKey]?.thumbnail?.source;
+
+        if (imgUrl) {
+          setDogImgUrlLink(imgUrl);
+          setDogName(randomBreed);
+        } else {
+          // If no image found for this breed, try another one
+          console.log(
+            'No image found for',
+            randomBreed,
+            ', trying another breed',
+          );
+          getRandomDogImage();
+          return;
+        }
       } else {
-        console.log('Invalid response structure:', response.data);
+        throw new Error('Invalid API response structure');
       }
     } catch (error) {
-      console.log('Error fetching dog image:', error);
+      console.error('Error fetching dog image:', error);
       Alert.alert('Error', 'Failed to load dog image. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // Select a random dog and fetch its image once the breeds list is loaded
+  useEffect(() => {
+    if (dogBreedsList.length > 0) {
+      getRandomDogImage();
+    }
+    // We're intentionally not including getRandomDogImage in the dependency array
+    // because it would cause an infinite loop. The function references dogBreedsList which
+    // would trigger the effect again, causing an infinite loop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dogBreedsList]);
 
   const checkInputGuess = () => {
     const m = userInput.length;
@@ -97,9 +160,18 @@ const QuizScreen: React.FC<Props> = ({navigation}) => {
 
       <MyAppText style={styles.headerTitle}>Who's That Doggo?</MyAppText>
 
-      <Image source={{uri: dogImgUrlLink}} style={styles.image} />
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#E91E63" />
+          <MyAppText style={styles.loadingText}>Loading dog...</MyAppText>
+        </View>
+      ) : (
+        <Image source={{uri: dogImgUrlLink}} style={styles.image} />
+      )}
 
-      <TouchableOpacity onPress={getRandomDogImage} style={styles.shuffleIcon}>
+      <TouchableOpacity
+        onPress={() => getRandomDogImage()}
+        style={styles.shuffleIcon}>
         <Ionicons name="ios-shuffle" size={32} color="#007AFF" />
       </TouchableOpacity>
 
@@ -126,7 +198,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '90%',
-    height: 200,
+    height: 300,
     borderRadius: 12,
     resizeMode: 'cover',
     marginBottom: moderateVerticalScale(16),
@@ -166,7 +238,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: moderateScale(16),
     marginBottom: moderateVerticalScale(16),
   },
-
   backButton: {
     alignSelf: 'flex-start', // ensures it aligns to the left
     marginLeft: 20,
@@ -175,12 +246,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8D7DA',
     marginBottom: moderateVerticalScale(8), // spacing between button and title
   },
-
   headerTitle: {
     fontSize: moderateScale(22),
     fontWeight: '600',
     color: '#1A1A1A',
     textAlign: 'left',
+  },
+  loadingContainer: {
+    width: '90%',
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    marginBottom: moderateVerticalScale(16),
+    alignSelf: 'center',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: '#666',
   },
 });
 
